@@ -2,6 +2,7 @@ package usecase.delivery_member.query;
 
 import mysql_executor.AbstractExecutor;
 import java.util.Date;
+
 import java.sql.*;
 
 public class AddDeliverQuery extends AbstractExecutor {
@@ -29,6 +30,9 @@ public class AddDeliverQuery extends AbstractExecutor {
         pstmt.setString(0, toLocation);
     }
     
+    public void showResult(ResultSet rs) {
+
+    }
 
 
 }
