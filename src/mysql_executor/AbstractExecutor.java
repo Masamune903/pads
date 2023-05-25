@@ -7,7 +7,7 @@ public abstract class AbstractExecutor {
 
 	public abstract String getSQLTemplate();
 
-	public abstract void setQuery(PreparedStatement pstmt);
+	public abstract void setQuery(PreparedStatement pstmt) throws SQLException;
 
 	public abstract void showResult(ResultSet res);
 

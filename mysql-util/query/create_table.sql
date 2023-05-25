@@ -69,7 +69,7 @@ CREATE TABLE delivery (
 	start_time DATETIME,
 	end_time DATETIME,
 	from_location VARCHAR(50),
-	end_location VARCHAR(50),
+	to_location VARCHAR(50),
 	PRIMARY KEY (product, delivery_member)
 );
 
