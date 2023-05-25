@@ -8,8 +8,9 @@ USE pads;
 CREATE TABLE model (
 	code VARCHAR(20) PRIMARY KEY,
 	name VARCHAR(50),
+	category VARCHAR(50),
 	price INT,
-	manufacturer_name VARCHAR(50)
+	manufacturer VARCHAR(50)
 );
 
 CREATE TABLE manufacturer (
@@ -18,10 +19,17 @@ CREATE TABLE manufacturer (
 
 CREATE TABLE product (
 	code VARCHAR(20),
-	model_code VARCHAR(20),
-	user_id INT,
-	receipt_location_name VARCHAR(50),
-	PRIMARY KEY (code, model_code)
+	model VARCHAR(20),
+	warehouse VARCHAR(50),
+	user INT,
+	purchased_price INT,
+	purchased_time DATETIME,
+	receipt_location VARCHAR(50),
+	PRIMARY KEY (code, model)
+);
+
+CREATE TABLE product_category (
+	name VARCHAR(20)
 );
 
 CREATE TABLE location (
@@ -49,19 +57,20 @@ CREATE TABLE delivery_member (
 );
 
 CREATE TABLE route_plan (
-	product_code VARCHAR(20) PRIMARY KEY,
-	from_location_name VARCHAR(50),
-	to_location_name VARCHAR(50)
+	product VARCHAR(20) PRIMARY KEY,
+	from_location VARCHAR(50),
+	to_location VARCHAR(50),
+	delivery_member VARCHAR(20)
 );
 
 CREATE TABLE delivery (
-	product_code VARCHAR(20),
-	delivery_member_code VARCHAR(20),
+	product VARCHAR(20),
+	delivery_member VARCHAR(20),
 	start_time DATETIME,
 	end_time DATETIME,
-	from_location_name VARCHAR(50),
-	end_location_name VARCHAR(50),
-	PRIMARY KEY (product_code, delivery_member_code)
+	from_location VARCHAR(50),
+	end_location VARCHAR(50),
+	PRIMARY KEY (product, delivery_member)
 );
 
 CREATE TABLE user (
@@ -71,57 +80,53 @@ CREATE TABLE user (
 );
 
 CREATE TABLE location_register (
-	id INT PRIMARY KEY,
-	name VARCHAR(50),
-	money INT
+	user INT PRIMARY KEY,
+	location VARCHAR(50)
 );
 
 /* データの初期化 */
 
 LOAD DATA LOCAL INFILE "initdata/model.csv"
-	into table model
-	fields terminated by ','
-	lines terminated by '\r\n';
+	INTO TABLE model
+	FIELDS TERMINATED BY ','
+	LINES TERMINATED BY '\r\n';
 
 LOAD DATA LOCAL INFILE "initdata/manufacturer.csv"
-	into table manufacturer
-	fields terminated by ','
-	lines terminated by '\r\n';
+	INTO TABLE manufacturer
+	FIELDS TERMINATED BY ','
+	LINES TERMINATED BY '\r\n';
 
 LOAD DATA LOCAL INFILE "initdata/product.csv"
-	into table product
-	fields terminated by ','
-	lines terminated by '\r\n';
+	INTO TABLE product
+	FIELDS TERMINATED BY ','
+	LINES TERMINATED BY '\r\n';
 
 LOAD DATA LOCAL INFILE "initdata/location.csv"
-	into table location
-	fields terminated by ','
-	lines terminated by '\r\n';
+	INTO TABLE location
+	FIELDS TERMINATED BY ','
+	LINES TERMINATED BY '\r\n';
 
 LOAD DATA LOCAL INFILE "initdata/receipt_location.csv"
-	into table receipt_location
-	fields terminated by ','
-	lines terminated by '\r\n';
+	INTO TABLE receipt_location
+	FIELDS TERMINATED BY ','
+	LINES TERMINATED BY '\r\n';
 
 LOAD DATA LOCAL INFILE "initdata/trsp_hub.csv"
-	into table trsp_hub
-	fields terminated by ','
-	lines terminated by '\r\n';
+	INTO TABLE trsp_hub
+	FIELDS TERMINATED BY ','
+	LINES TERMINATED BY '\r\n';
 
 LOAD DATA LOCAL INFILE "initdata/warehouse.csv"
-	into table warehouse
-	fields terminated by ','
-	lines terminated by '\r\n';
+	INTO TABLE warehouse
+	FIELDS TERMINATED BY ','
+	LINES TERMINATED BY '\r\n';
 
 LOAD DATA LOCAL INFILE "initdata/delivery_member.csv"
-	into table delivery_member
-	fields terminated by ','
-	lines terminated by '\r\n';
-UPDATE delivery_member
-	set state = NULL
-	where state = '';
+	INTO TABLE delivery_member
+	FIELDS TERMINATED BY ','
+	LINES TERMINATED BY '\r\n';
 	
 LOAD DATA LOCAL INFILE "initdata/user.csv"
-	into table user
-	fields terminated by ','
-	lines terminated by '\r\n';
+	INTO TABLE user
+	FIELDS TERMINATED BY ','
+	LINES TERMINATED BY '\r\n';
