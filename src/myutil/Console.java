@@ -3,7 +3,7 @@ package myutil;
 import java.util.Scanner;
 
 public class Console {
-	public void log(Object... msgs) {
+	public void print(Object... msgs) {
 		String output = "";
 		if (msgs != null) {
 			for (Object msg : msgs) {
@@ -25,7 +25,7 @@ public class Console {
 	}
 
 	private String prompt(Object[] msgs, String inputMark) {
-		this.log(msgs);
+		this.print(msgs);
 
 		Scanner sc = new Scanner(System.in);
 		System.out.print(inputMark);
@@ -52,12 +52,12 @@ public class Console {
 					return false;
 			}
 
-			this.log("Please answer y/n");
+			this.print("Please answer y/n");
 		}
 	}
 
 	public void next(Object... msgs) {
-		this.prompt(msgs, "Enter > ");
+		this.prompt(msgs, "( Enter )");
 	}
 
 	public int select(Object msg, Object... options) {
@@ -67,21 +67,21 @@ public class Console {
 	public int selectWithCancel(Object msg, String cancelOption, Object... options) {
 		boolean hasCancel = cancelOption != null;
 		while (true) {
-			this.log(msg);
+			this.print(msg);
 
 			for (Object option : options) {
 				String optionStr = option + "";
 				String[] optionStrs = optionStr.split("\n");
 				for (String optionStrElm : optionStrs)
-					this.log("\t" + optionStrElm);
+					this.print("\t" + optionStrElm);
 			}
 
 			if (hasCancel)
-				this.log("\t", cancelOption);
+				this.print("\t", cancelOption);
 
 			String input = (hasCancel)
-					? this.prompt(null, "0-" + options.length + " > ")
-					: this.prompt(null, "1-" + options.length + " > ");
+				? this.prompt(null, "0-" + options.length + " > ")
+				: this.prompt(null, "1-" + options.length + " > ");
 
 			if (cancelOption == null && options.length == 0)
 				throw new RuntimeException("選択肢の数が0です。");
@@ -95,5 +95,19 @@ public class Console {
 				this.error("整数を入力してください");
 			}
 		}
+	}
+
+	public void waitProgress(String msg, double sec) {
+		if (msg != null)
+			this.print(msg);
+
+		int max = 10;
+
+		for (int i = 0; i < max; i++) {
+			System.out.print("*");
+			MyUtil.sleep(null, sec / max);
+		}
+
+		System.out.println();
 	}
 }

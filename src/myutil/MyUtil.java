@@ -12,9 +12,10 @@ public class MyUtil {
 		}
 	}
 
-	public static void sleep(String msg, long ms) {
-		console.log(msg);
+	public static void sleep(String msg, double sec) {
+		if (msg != null)
+			console.print(msg);
 
-		sleep(ms);
+		sleep((long) (sec * 1000));
 	}
 }

@@ -2,30 +2,33 @@ package usecase.user;
 
 import java.util.ArrayList;
 
-import data.*;
-import myutil.*;
-import usecase.user.query.*;
+import database.data.location.receipt_location.*;
+import database.data.location.receipt_location.register_location_register.*;
+import database.data.model.*;
+import database.data.product.*;
+import database.data.user.*;
+import database.executor.location.receipt_location.*;
+import database.executor.product.*;
+import database.executor.user.*;
+import module.route_manager.*;
+import database.executor.purchase.*;
 
 public class User {
-	public final int id;
+	public final UserKey key;
 
 	public String getName() {
 		return this.getData().name;
 	}
 
 	public UserData getData() {
-		return new GetUser(this.id).execute();
+		return new GetUser(this.key).execute();
 	}
 
-	public User(int id) {
-		this.id = id;
+	public User(UserKey key) {
+		this.key = key;
 	}
 
-	public User(UserData data) {
-		this(data.id);
-	}
-
-	public void purchase(String model, int price, String receiptLocation) throws Exception {
+	public void purchase(ModelKey model, int price, ReceiptLocationKey receiptLocation) throws Exception {
 		UserData u = this.getData();
 		if (u.money < price)
 			throw new Exception("残高不足");
@@ -34,21 +37,25 @@ public class User {
 		if (product == null)
 			throw new Exception("在庫不足");
 
-		new PurchaseProduct(this.id, price, System.currentTimeMillis(), receiptLocation).execute();
-		new ReduceUserMoney(this.id, price).execute();
+		new PurchaseProduct(product.key, this.key, price, System.currentTimeMillis(), receiptLocation).execute();
+		new ReduceUserMoney(this.key, price).execute();
+
+		DeliveryPlanCreator dpc = new DeliveryPlanCreator(product.key, product.warehouse, receiptLocation);
+		dpc.createDeliveryPlan();
+
 	}
 
 	@Override
 	public String toString() {
-		return "User { id: " + id + ", name: " + this.getName() + " }";
+		return "User { id: " + this.key.id + ", name: " + this.getName() + " }";
 	}
 
 	public ArrayList<ReceiptLocationData> getReceiptLocation() {
-		return new GetReceiptLocationByUser(this.id).execute();
+		return new GetReceiptLocationListByUser(this.key).execute();
 	}
 
-	public void registerReceiptLocation(ReceiptLocationData recLoc) {
-		new RegisterReceiptLocation(this.id, recLoc.name).execute();
+	public void registerReceiptLocation(ReceiptLocationKey recLoc) {
+		new RegisterReceiptLocation(new ReceiptLocationRegisterKey(this.key, recLoc)).execute();
 	}
-	
+
 }

@@ -4,5 +4,7 @@
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
         "C:/Program Files/MySQL/mysql-connector-j-8.0.33/mysql-connector-j-8.0.33.jar"
-    ]
+    ],
+    "java.format.settings.url": "eclipse-java-google-style.xml",
+    "editor.formatOnSave": true
 }

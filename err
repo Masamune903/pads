@@ -1,7 +1,8 @@
-mysql> /* $ "bin/mysql" -u root --local-infile=1 */
+mysql> /* initdata: C:/Program Files/MySQL/MySQL 8.0.33/initdata */
+mysql> /* $ cd "C:/Program Files/MySQL/MySQL 8.0.33"; bin/mysql -u root --local-infile=1; */
 mysql>
 mysql> DROP DATABASE pads;
-Query OK, 13 rows affected (0.08 sec)
+Query OK, 13 rows affected (0.07 sec)
 
 mysql> CREATE DATABASE pads;
 Query OK, 1 row affected (0.00 sec)
@@ -23,14 +24,14 @@ mysql>
 mysql> CREATE TABLE manufacturer (
     ->  name VARCHAR(50) PRIMARY KEY
     -> );
-Query OK, 0 rows affected (0.02 sec)
+Query OK, 0 rows affected (0.01 sec)
 
 mysql>
 mysql> CREATE TABLE product (
     ->  code VARCHAR(20),
     ->  model VARCHAR(20),
     ->  warehouse VARCHAR(50),
-    ->  user INT,
+    ->  purchaser INT,
     ->  purchased_price INT,
     ->  purchased_time DATETIME,
     ->  receipt_location VARCHAR(50),
@@ -39,7 +40,7 @@ mysql> CREATE TABLE product (
 Query OK, 0 rows affected (0.02 sec)
 
 mysql>
-mysql> CREATE TABLE product_category (
+mysql> CREATE TABLE model_category (
     ->  name VARCHAR(20)
     -> );
 Query OK, 0 rows affected (0.02 sec)
@@ -47,21 +48,24 @@ Query OK, 0 rows affected (0.02 sec)
 mysql>
 mysql> CREATE TABLE location (
     ->  name VARCHAR(50) PRIMARY KEY,
-    ->  address VARCHAR(50)
+    ->  address VARCHAR(50),
+    ->  longitude DOUBLE,
+    ->  latitude DOUBLE
     -> );
-Query OK, 0 rows affected (0.01 sec)
+Query OK, 0 rows affected (0.02 sec)
 
 mysql>
 mysql> CREATE TABLE receipt_location (
     ->  name VARCHAR(50) PRIMARY KEY
     -> );
-Query OK, 0 rows affected (0.01 sec)
+Query OK, 0 rows affected (0.02 sec)
 
 mysql>
 mysql> CREATE TABLE trsp_hub (
-    ->  name VARCHAR(50) PRIMARY KEY
+    ->  name VARCHAR(50) PRIMARY KEY,
+    ->  warehouse VARCHAR(50)
     -> );
-Query OK, 0 rows affected (0.01 sec)
+Query OK, 0 rows affected (0.03 sec)
 
 mysql>
 mysql> CREATE TABLE warehouse (
@@ -79,13 +83,19 @@ mysql> CREATE TABLE delivery_member (
 Query OK, 0 rows affected (0.02 sec)
 
 mysql>
-mysql> CREATE TABLE route_plan (
+mysql> CREATE TABLE delivery_plan (
     ->  product VARCHAR(20) PRIMARY KEY,
     ->  from_location VARCHAR(50),
     ->  to_location VARCHAR(50),
     ->  delivery_member VARCHAR(20)
     -> );
 Query OK, 0 rows affected (0.02 sec)
+
+mysql> INSERT INTO delivery_plan VALUES ("P001", "L001", "L002", "DM001");
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO delivery_plan VALUES ("P011", "L001", "L003", "DM001");
+Query OK, 1 row affected (0.00 sec)
 
 mysql>
 mysql> CREATE TABLE delivery (
@@ -94,10 +104,13 @@ mysql> CREATE TABLE delivery (
     ->  start_time DATETIME,
     ->  end_time DATETIME,
     ->  from_location VARCHAR(50),
-    ->  end_location VARCHAR(50),
+    ->  to_location VARCHAR(50),
     ->  PRIMARY KEY (product, delivery_member)
     -> );
 Query OK, 0 rows affected (0.02 sec)
+
+mysql> INSERT INTO delivery VALUES ("P001", "DM001", "2023/05/26 9:55:00", NULL, "L001", "L002");
+Query OK, 1 row affected, 1 warning (0.01 sec)
 
 mysql>
 mysql> CREATE TABLE user (
@@ -108,9 +121,10 @@ mysql> CREATE TABLE user (
 Query OK, 0 rows affected (0.02 sec)
 
 mysql>
-mysql> CREATE TABLE location_register (
-    ->  user INT PRIMARY KEY,
-    ->  location VARCHAR(50)
+mysql> CREATE TABLE receipt_location_register (
+    ->  user INT,
+    ->  location VARCHAR(50),
+    ->  PRIMARY KEY (user, location)
     -> );
 Query OK, 0 rows affected (0.02 sec)
 
@@ -121,7 +135,7 @@ mysql> LOAD DATA LOCAL INFILE "initdata/model.csv"
     ->  INTO TABLE model
     ->  FIELDS TERMINATED BY ','
     ->  LINES TERMINATED BY '\r\n';
-Query OK, 12 rows affected (0.01 sec)
+Query OK, 12 rows affected (0.04 sec)
 Records: 12  Deleted: 0  Skipped: 0  Warnings: 0
 
 mysql>
@@ -129,7 +143,7 @@ mysql> LOAD DATA LOCAL INFILE "initdata/manufacturer.csv"
     ->  INTO TABLE manufacturer
     ->  FIELDS TERMINATED BY ','
     ->  LINES TERMINATED BY '\r\n';
-Query OK, 4 rows affected (0.01 sec)
+Query OK, 4 rows affected (0.03 sec)
 Records: 4  Deleted: 0  Skipped: 0  Warnings: 0
 
 mysql>
@@ -137,23 +151,31 @@ mysql> LOAD DATA LOCAL INFILE "initdata/product.csv"
     ->  INTO TABLE product
     ->  FIELDS TERMINATED BY ','
     ->  LINES TERMINATED BY '\r\n';
-Query OK, 36 rows affected (0.01 sec)
-Records: 36  Deleted: 0  Skipped: 0  Warnings: 0
+Query OK, 140 rows affected (0.03 sec)
+Records: 140  Deleted: 0  Skipped: 0  Warnings: 0
+
+mysql>
+mysql> LOAD DATA LOCAL INFILE "initdata/model_category.csv"
+    ->  INTO TABLE model_category
+    ->  FIELDS TERMINATED BY ','
+    ->  LINES TERMINATED BY '\r\n';
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Deleted: 0  Skipped: 0  Warnings: 0
 
 mysql>
 mysql> LOAD DATA LOCAL INFILE "initdata/location.csv"
     ->  INTO TABLE location
     ->  FIELDS TERMINATED BY ','
     ->  LINES TERMINATED BY '\r\n';
-Query OK, 20 rows affected (0.01 sec)
-Records: 20  Deleted: 0  Skipped: 0  Warnings: 0
+Query OK, 21 rows affected (0.01 sec)
+Records: 21  Deleted: 0  Skipped: 0  Warnings: 0
 
 mysql>
 mysql> LOAD DATA LOCAL INFILE "initdata/receipt_location.csv"
     ->  INTO TABLE receipt_location
     ->  FIELDS TERMINATED BY ','
     ->  LINES TERMINATED BY '\r\n';
-Query OK, 6 rows affected (0.00 sec)
+Query OK, 6 rows affected (0.01 sec)
 Records: 6  Deleted: 0  Skipped: 0  Warnings: 0
 
 mysql>
@@ -169,7 +191,7 @@ mysql> LOAD DATA LOCAL INFILE "initdata/warehouse.csv"
     ->  INTO TABLE warehouse
     ->  FIELDS TERMINATED BY ','
     ->  LINES TERMINATED BY '\r\n';
-Query OK, 5 rows affected (0.00 sec)
+Query OK, 5 rows affected (0.01 sec)
 Records: 5  Deleted: 0  Skipped: 0  Warnings: 0
 
 mysql>
@@ -177,7 +199,7 @@ mysql> LOAD DATA LOCAL INFILE "initdata/delivery_member.csv"
     ->  INTO TABLE delivery_member
     ->  FIELDS TERMINATED BY ','
     ->  LINES TERMINATED BY '\r\n';
-Query OK, 10 rows affected (0.01 sec)
+Query OK, 10 rows affected (0.02 sec)
 Records: 10  Deleted: 0  Skipped: 0  Warnings: 0
 
 mysql>
@@ -185,5 +207,5 @@ mysql> LOAD DATA LOCAL INFILE "initdata/user.csv"
     ->  INTO TABLE user
     ->  FIELDS TERMINATED BY ','
     ->  LINES TERMINATED BY '\r\n';
-Query OK, 10 rows affected (0.00 sec)
+Query OK, 10 rows affected (0.01 sec)
 Records: 10  Deleted: 0  Skipped: 0  Warnings: 0
