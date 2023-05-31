@@ -14,7 +14,7 @@ public class SetEndTimeQuery extends AbstractExecutor {
 
     @Override
     public String getSQLTemplate() {
-        return "UPDATE delivery SET endTime = " + new Date().toString() + " WHERE endTime = NULL";
+        return "UPDATE delivery SET endTime = " + new Date().toString() + " WHERE endTime = NULL ";
 
     public void setQuery(PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, this.endTime);
