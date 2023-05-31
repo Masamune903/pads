@@ -1,7 +1,7 @@
 package usecase.delivery_member;
 
 /** 
- * 
+ * @author Yuri Morimoto
  */
 public class DeliverInstruction {
     public final String product;
