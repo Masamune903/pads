@@ -63,14 +63,17 @@ public class UserApp {
 	}
 
 	public void selectCommand() {
-		console.print(this.user, "でログインしています");
+		UserData user = this.user.getData();
+		console.print(user.key.id + " " + user.name, "でログインしています");
+		console.print("現在の残金: ￥" + this.user.getData().money);
 
 		int cmd = console.select("操作を選んでください",
 			"1. 商品を閲覧する",
 			"2. 購入履歴を見る",
 			"3. 運送状況を見る",
 			"4. 運送の詳細を見る",
-			"5. ログアウトする");
+			"5. 残金にチャージする",
+			"6. ログアウトする");
 
 		switch (cmd) {
 			case 1:
@@ -90,6 +93,10 @@ public class UserApp {
 				this.showProductDelivery();
 				break;
 			case 5:
+				// 状態遷移: 進む (所持金の追加へ)
+				this.addMoney();
+				break;
+			case 6:
 				if (console.confirm("ログアウトしますか？")) {
 					console.print("ログアウトしました");
 					return;
@@ -215,5 +222,36 @@ public class UserApp {
 		LocationKey lastLocation = deliveryList.get(deliveryList.size() - 1).toLocation;
 		console.next(currentLocation != null && lastLocation.equals(currentLocation) ? " ●" : " -",
 			lastLocation.name);
+	}
+
+	public void addMoney() {
+		console.print("現在の残高: ￥" + this.user.getData().money);
+		String amountStr = console.prompt("チャージ金額を入力してください");
+		if (amountStr.equals("")) {
+			console.next("チャージをキャンセルしました");
+			return;
+		}
+
+		int amount;
+		try {
+			amount = Integer.parseInt(amountStr);
+			if (amount <= 0) {
+				console.error("チャージする金額を正の整数で入力してください");
+				this.addMoney();
+				return;
+			}
+		} catch (NumberFormatException e) {
+			console.error("チャージする金額を正の整数で入力してください");
+			this.addMoney();
+			return;
+		}
+
+		if (!console.confirm("￥" + amount + " をチャージしますか？\n\tチャージ後の残高: ￥" + (this.user.getData().money + amount)))
+			;
+
+		new AddUserMoney(this.user.key, amount).execute();
+
+		console.print("チャージが完了しました");
+		console.next("残高: ￥" + this.user.getData().money);
 	}
 }

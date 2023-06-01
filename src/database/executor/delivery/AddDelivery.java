@@ -1,4 +1,6 @@
 /**
+ * 配送予定が立った際に、その記録を実行するSQLUpdate
+ * 
  * @author CY21202 MIHARA Yutaro
  */
 
@@ -12,7 +14,6 @@ import database.data.delivery.*;
 import database.data.location.*;
 import database.data.product.*;
 
-/** 配送予定が立った時に追加 */
 public class AddDelivery extends AbstractSQLUpdateExecutor {
     private final DeliveryKey key;
     private final LocationKey toLocation;

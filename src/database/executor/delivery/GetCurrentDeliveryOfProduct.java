@@ -1,4 +1,6 @@
 /**
+ * 指定した商品について、直近の配送を取得するSQLQuery
+ * 
  * @author CY21249 TAKAGI Masamune
  */
 

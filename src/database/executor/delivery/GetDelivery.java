@@ -1,4 +1,6 @@
 /**
+ * 指定したキーの Delivery を取得するSQLQuery
+ * 
  * @author CY21202 MIHARA Yutaro
  */
 

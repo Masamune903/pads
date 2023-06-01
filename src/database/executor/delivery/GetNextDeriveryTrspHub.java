@@ -1,4 +1,6 @@
 /**
+ * currentLocaiton から targetLocation の方へ配達する際の、次の配送拠点を決めるSQLQuery
+ * 
  * @author CY21249 TAKAGI Masamune
  */
 

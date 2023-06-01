@@ -1,4 +1,6 @@
 /**
+ * 指定した拠点について、商品が搬入されており配送が可能な配送を取得するSQLQuery
+ * 
  * @author CY21249 TAKAGI Masamune
  */
 

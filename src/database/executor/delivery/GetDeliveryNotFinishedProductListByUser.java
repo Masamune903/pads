@@ -1,4 +1,6 @@
 /**
+ * 指定したユーザーが購入した商品のうち、配送が終わっていない商品を取得するSQLQuery
+ * 
  * @author CY21202 MIHARA Yutaro
  */
 

@@ -1,4 +1,6 @@
 /**
+ * 指定したメンバーに配送指示が出たことを更新するSQLUpdate
+ * 
  * @author CY21202 MIHARA Yutaro
  */
 

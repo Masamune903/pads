@@ -1,4 +1,6 @@
 /**
+ * 指定した商品の配送における、一番最後の配送を取得するSQLQuery
+ * 
  * @author CY21249 TAKAGI Masamune
  */
 
