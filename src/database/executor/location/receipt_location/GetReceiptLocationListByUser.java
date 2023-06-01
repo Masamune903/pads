@@ -1,3 +1,7 @@
+/**
+ * @author CY21248 SASAHARA Hayato
+ */
+
 package database.executor.location.receipt_location;
 
 import java.sql.*;
@@ -14,11 +18,11 @@ public class GetReceiptLocationListByUser extends GetReceiptLocationList {
 	@Override
 	public String getSQLTemplate() {
 		return "SELECT * "
-			+ "FROM user, receipt_location, receipt_location_register, location "
-			+ "WHERE user.id = receipt_location_register.user "
-			+ "AND receipt_location.name = receipt_location_register.location "
-			+ "AND receipt_location.name = location.name "
-			+ "AND user.id = ?";
+			+ "	FROM user, receipt_location, receipt_location_register, location "
+			+ "	WHERE user.id = receipt_location_register.user "
+			+ "		AND receipt_location.name = receipt_location_register.location "
+			+ "		AND receipt_location.name = location.name "
+			+ "		AND user.id = ?";
 	}
 
 	@Override

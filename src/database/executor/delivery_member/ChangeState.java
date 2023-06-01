@@ -1,3 +1,7 @@
+/**
+ * @author CY21202 MIHARA Yutaro
+ */
+
 package database.executor.delivery_member;
 
 import java.sql.*;

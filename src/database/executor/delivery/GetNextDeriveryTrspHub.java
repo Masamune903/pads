@@ -1,3 +1,7 @@
+/**
+ * @author CY21249 TAKAGI Masamune
+ */
+
 package database.executor.delivery;
 
 import java.sql.*;
@@ -49,6 +53,7 @@ public class GetNextDeriveryTrspHub extends AbstractSQLQueryExecutor<TrspHubData
 			+ "		AND current.name = ?"
 			+ "		AND target.name = ?"
 			+ "		AND location.name != current.name"
+			+ "		AND location.name NOT IN (SELECT name FROM warehouse)"
 			+ "		AND "
 			+ "			POW(target.longitude - location.longitude, 2) + POW(target.latitude - location.latitude, 2)"
 			+ "				<"

@@ -1,3 +1,7 @@
+/**
+ * @author CY21249 TAKAGI Masamune
+ */
+
 package myutil;
 
 import java.sql.*;

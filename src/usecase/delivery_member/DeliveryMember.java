@@ -1,3 +1,7 @@
+/**
+ * @author CY21249 TAKAGI Masamune
+ */
+
 package usecase.delivery_member;
 
 import myutil.*;
@@ -49,15 +53,16 @@ public class DeliveryMember {
     public DeliveryInstruction waitForInstructions() {
         console.print(this, "は、配送指示を待っています…");
 
-        DeliveryInstruction di = null;
-        while (di == null) {
-            di = this.fetchInstruction();
+        while (true) {
+            DeliveryInstruction di = this.fetchInstruction();
+
+            if (di != null) {
+                console.print(this, "が、以下の配送指示をうけました:", di);
+                return di;
+            }
+
             MyUtil.sleep(null, 1);
         }
-
-        console.print(this, "が、以下の配送指示をうけました:", di);
-
-        return di;
     }
 
     public void deliverToNext(DeliveryKey delivery) {
@@ -70,11 +75,11 @@ public class DeliveryMember {
     }
 
     public void finishDelivery(DeliveryKey delivery) {
-        console.next(this, "の配送が終わりました。");
-
         new SetEndTime(delivery, System.currentTimeMillis()).execute();
 
         new ChangeState(this.key, "not_here").execute();
+
+        console.next(this, "の配送が終わりました。");
     }
 
     public void backToTrspHub() {
@@ -82,13 +87,13 @@ public class DeliveryMember {
     }
 
     public void arriveAtTrspHub() {
-        console.next(this, "が、拠点へ帰ってきました。");
         new ChangeState(this.key, "wating").execute();
+        console.next(this, "が、拠点へ帰ってきました。");
     }
 
     public void logout() {
-        console.print(this, "は、ログアウトしました。");
         new ChangeState(this.key, null).execute();
+        console.print(this, "は、ログアウトしました。");
     }
 
     @Override

@@ -1,13 +1,17 @@
+/**
+ * @author CY21202 MIHARA Yutaro
+ */
+
 package database.executor.delivery_member;
 
 import java.sql.*;
 
 import database.data.location.trsp_hub.TrspHubKey;
 
-public class GetDeliveryMemberByBelongsList extends GetDeliveryMemberList {
+public class GetDeliveryMemberListByBelongs extends GetDeliveryMemberList {
 	private final TrspHubKey trspHub;
 
-	public GetDeliveryMemberByBelongsList(TrspHubKey trspHub) {
+	public GetDeliveryMemberListByBelongs(TrspHubKey trspHub) {
 		this.trspHub = trspHub;
 	}
 

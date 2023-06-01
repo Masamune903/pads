@@ -1,3 +1,7 @@
+/**
+ * @author CY21249 TAKAGI Masamune
+ */
+
 package module.route_manager;
 
 import database.data.location.LocationKey;

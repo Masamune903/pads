@@ -1,12 +1,17 @@
+/**
+ * @author CY21249 TAKAGI Masamune
+ */
+
 package usecase.delivery_member;
 
 import java.util.*;
 
 import database.data.delivery.DeliveryInstruction;
 import database.data.delivery_member.*;
+import database.executor.delivery.GetDeliveryInstruction;
 import database.executor.delivery_member.*;
 import myutil.*;
-import usecase.App;
+import usecase.UsecaseUtil;
 
 public class DeliveryMemberApp {
 	private final DeliveryMember member;
@@ -18,18 +23,22 @@ public class DeliveryMemberApp {
 	}
 
 	public static void main(String[] args) {
-		App.waitUntilSQLServerRunning();
+		UsecaseUtil.waitUntilSQLServerRunning();
 
 		ArrayList<DeliveryMemberData> memberDataList = new GetDeliveryMemberList().execute();
 
 		console.print("配達員ID一覧です");
 		for (DeliveryMemberData member : memberDataList) {
-			console.print(" -", member.key.code);
+			DeliveryInstruction instruction = new GetDeliveryInstruction(member.key).execute();
+			console.print(" -", (instruction != null ? "*" : " "), member.key.code);
 		}
 
 		DeliveryMemberData memberData;
 		while (true) {
 			String code = console.prompt("ログインする配達員IDを入力してください");
+
+			if (code.equals("exit") || code.equals("0"))
+				return;
 
 			memberData = new GetDeliveryMember(new DeliveryMemberKey(code)).execute();
 			if (memberData != null)
@@ -41,12 +50,13 @@ public class DeliveryMemberApp {
 		DeliveryMemberApp app = new DeliveryMemberApp(new DeliveryMember(memberData.key));
 		app.run();
 
+		main(args);
 	}
 
 	public void run() {
 		// ログイン
 		this.member.login();
-		console.print(this.member + "がログインしました。操作を開始します。");
+		console.print(this.member.key.code + " " + this.member.getName() + "がログインしました。操作を開始します。");
 
 		while (true) {
 			// 操作を聞く
@@ -86,7 +96,7 @@ public class DeliveryMemberApp {
 			// 配送を開始する
 			this.member.deliverToNext(instruction.delivery);
 
-			console.waitProgress("配送中...", (int) (Math.random() * 5 + 5));
+			console.waitProgress("配送中...", (int) (Math.random() * 8 + 5));
 
 			// 配送が完了する
 			this.member.finishDelivery(instruction.delivery);

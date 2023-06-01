@@ -1,3 +1,7 @@
+/**
+ * @author CY21249 TAKAGI Masamune
+ */
+
 package database.data.delivery;
 
 import java.sql.*;
@@ -36,5 +40,19 @@ public class DeliveryData {
 			new DeliveryMemberKey(resSet.getString("delivery_member")),
 			resSet.getTimestamp("start_time"),
 			resSet.getTimestamp("end_time"));
+	}
+
+	@Override
+	public String toString() {
+		return "配送 { 商品: [" + this.key.product.model.code + "] " + this.key.product.code + ", " + this.key.fromLocation.name + " -> " + this.toLocation.name
+			+ ((this.deliveryMember != null)
+				? ", 配達員: " + this.deliveryMember.code + ", "
+				: "")
+			+ ((this.startTime != null)
+				? "運送開始時刻: " + this.startTime + ", "
+				: "")
+			+ ((this.endTime != null)
+				? "運送完了時刻: " + this.endTime
+				: "");
 	}
 }

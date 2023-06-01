@@ -1,3 +1,7 @@
+/**
+ * @author CY21248 SASAHARA Hayato
+ */
+
 package database.executor.location.receipt_location;
 
 import java.sql.*;
@@ -15,8 +19,8 @@ public class GetReceiptLocationList extends AbstractGetListSQLQueryExecutor<Rece
 	@Override
 	public String getSQLTemplate() {
 		return "SELECT * "
-			+ "FROM receipt_location, location "
-			+ "WHERE receipt_location.name = location.name;";
+			+ "	FROM receipt_location, location "
+			+ "	WHERE receipt_location.name = location.name;";
 	}
 
 	@Override

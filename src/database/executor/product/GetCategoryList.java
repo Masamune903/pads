@@ -1,3 +1,7 @@
+/**
+ * @author CY21248 SASAHARA Hayato
+ */
+
 package database.executor.product;
 
 import java.sql.*;

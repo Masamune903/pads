@@ -1,11 +1,15 @@
+/**
+ * @author CY21249 TAKAGI Masamune
+ */
+
 package myutil;
 
 public class MyUtil {
 	static final Console console = new Console();
 
-	public static void sleep(long ms) {
+	public static void sleep(double sec) {
 		try {
-			Thread.sleep(ms);
+			Thread.sleep((long) (sec * 1000));
 		} catch (InterruptedException e) {
 			System.out.println(e);
 			e.printStackTrace();
@@ -16,6 +20,6 @@ public class MyUtil {
 		if (msg != null)
 			console.print(msg);
 
-		sleep((long) (sec * 1000));
+		sleep(sec);
 	}
 }

@@ -1,3 +1,7 @@
+/**
+ * @author CY21265 MORIMOTO Yuri
+ */
+
 package database.executor.purchase;
 
 import java.sql.*;

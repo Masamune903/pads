@@ -1,3 +1,7 @@
+/**
+ * @author CY21248 SASAHARA Hayato
+ */
+
 package database.executor.product;
 
 import java.sql.*;
@@ -10,7 +14,7 @@ import database.data.model_category.ModelCategoryKey;
 public class GetModelListByCategory extends AbstractGetListSQLQueryExecutor<ModelDataWithProductCount> {
     private final ModelCategoryKey category;
 
-	public GetModelListByCategory(ModelCategoryKey category) {
+    public GetModelListByCategory(ModelCategoryKey category) {
         this.category = category;
     }
 
@@ -25,7 +29,7 @@ public class GetModelListByCategory extends AbstractGetListSQLQueryExecutor<Mode
     }
 
     @Override
-	public void setQuery(PreparedStatement pstmt) throws SQLException {
+    public void setQuery(PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, this.category.name);
     }
 

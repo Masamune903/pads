@@ -1,3 +1,7 @@
+/**
+ * @author CY21202 MIHARA Yutaro
+ */
+
 package database.executor.delivery;
 
 import java.sql.*;
@@ -14,11 +18,11 @@ public class GetDeliveryInstruction extends AbstractSQLQueryExecutor<DeliveryIns
 	}
 
 	public String getSQLTemplate() {
-		// 自分がすべき配達は、start_time が null のもの
+		// 自分がすべき配達は、配達が終わっていない( end_time が null )もの
 		return "SELECT *\n"
 			+ "	FROM delivery\n"
 			+ "	WHERE delivery_member = ?\n"
-			+ "		AND start_time IS NULL";
+			+ "		AND end_time IS NULL";
 	}
 
 	public void setQuery(PreparedStatement pstmt) throws SQLException {

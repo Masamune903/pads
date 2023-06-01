@@ -1,3 +1,7 @@
+/**
+ * @author CY21248 SASAHARA Hayato
+ */
+
 package database.executor.location;
 
 import java.sql.*;
@@ -16,8 +20,8 @@ public class GetLocation extends AbstractSQLQueryExecutor<LocationData> {
 
 	@Override
 	public String getSQLTemplate() {
-		return "SELECT * FROM user "
-			+ "WHERE id = ?";
+		return "SELECT * FROM user"
+			+ "	WHERE id = ?";
 	}
 
 	@Override

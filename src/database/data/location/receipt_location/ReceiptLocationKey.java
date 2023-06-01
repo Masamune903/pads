@@ -1,3 +1,7 @@
+/**
+ * @author CY21249 TAKAGI Masamune
+ */
+
 package database.data.location.receipt_location;
 
 import java.sql.*;

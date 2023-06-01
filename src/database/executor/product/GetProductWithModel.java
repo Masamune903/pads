@@ -8,20 +8,20 @@ import java.sql.*;
 
 import database.executor.*;
 
-import database.data.product.ProductData;
+import database.data.product.ProductDataWithModel;
 import database.data.product.ProductKey;
 
-public class GetProduct extends AbstractSQLQueryExecutor<ProductData> {
+public class GetProductWithModel extends AbstractSQLQueryExecutor<ProductDataWithModel> {
 	private final ProductKey key;
 
-	public GetProduct(ProductKey key) {
+	public GetProductWithModel(ProductKey key) {
 		this.key = key;
 	}
 
 	@Override
 	public String getSQLTemplate() {
-		return "SELECT * FROM product"
-			+ "	WHERE code = ? AND model = ?";
+		return "SELECT * FROM product, model"
+			+ "	WHERE product.code = ? AND product.model = ? AND product.model = model.code";
 	}
 
 	@Override
@@ -31,10 +31,10 @@ public class GetProduct extends AbstractSQLQueryExecutor<ProductData> {
 	}
 
 	@Override
-	public ProductData getResult(ResultSet resSet) throws SQLException {
+	public ProductDataWithModel getResult(ResultSet resSet) throws SQLException {
 		if (!resSet.next())
 			return null;
 
-		return ProductData.fromQueryResult(resSet);
+		return ProductDataWithModel.fromQueryResult(resSet);
 	}
 }

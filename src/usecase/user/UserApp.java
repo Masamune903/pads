@@ -1,15 +1,23 @@
+/**
+ * @author CY21249 TAKAGI Masamune
+ */
+
 package usecase.user;
 
 import java.util.*;
-
+import database.data.delivery.*;
+import database.data.location.*;
 import database.data.location.receipt_location.*;
+import database.data.model.*;
 import database.data.product.*;
 import database.data.user.*;
+import database.executor.delivery.*;
 import database.executor.location.receipt_location.*;
+import database.executor.product.*;
 import database.executor.user.*;
 import database.executor.purchase.*;
 import myutil.*;
-import usecase.App;
+import usecase.UsecaseUtil;
 import usecase.user.sub.UserPurchaseApp;
 
 public class UserApp {
@@ -18,12 +26,16 @@ public class UserApp {
 	public static final Console console = new Console();
 
 	public static void main(String[] args) {
-		App.waitUntilSQLServerRunning();
+		UsecaseUtil.waitUntilSQLServerRunning();
 
 		UserKey userKey;
 		while (true) {
 			try {
 				String userIDStr = console.prompt("ログインするユーザーIDを入力してください");
+
+				if (userIDStr.equals("exit") || userIDStr.equals("0"))
+					return;
+
 				userKey = new UserKey(Integer.parseInt(userIDStr));
 
 				UserData userData = new GetUser(userKey).execute();
@@ -38,6 +50,8 @@ public class UserApp {
 		}
 
 		new UserApp(new User(userKey)).run();
+
+		main(args);
 	}
 
 	public UserApp(User user) {
@@ -55,7 +69,8 @@ public class UserApp {
 			"1. 商品を閲覧する",
 			"2. 購入履歴を見る",
 			"3. 運送状況を見る",
-			"4. ログアウトする");
+			"4. 運送の詳細を見る",
+			"5. ログアウトする");
 
 		switch (cmd) {
 			case 1:
@@ -68,8 +83,13 @@ public class UserApp {
 				break;
 			case 3:
 				// 状態遷移: 進む (運送状況の確認へ)
+				this.showPurchasedProductCurrentLocation();
 				break;
 			case 4:
+				// 状態遷移: 進む (運送の詳細へ)
+				this.showProductDelivery();
+				break;
+			case 5:
 				if (console.confirm("ログアウトしますか？")) {
 					console.print("ログアウトしました");
 					return;
@@ -85,13 +105,13 @@ public class UserApp {
 		console.print("受け取り場所を登録します。");
 
 		while (true) {
-			final ArrayList<ReceiptLocationData> recLocList = new GetReceiptLocationList().execute();
+			final ArrayList<ReceiptLocationData> recLocList = new GetReceiptLocationCandidateList(this.user.key).execute();
 			final String[] recLocStrList = new String[recLocList.size()];
 			int i = 0;
 			for (final ReceiptLocationData lecLoc : recLocList)
 				recLocStrList[i++] = i + ". " + lecLoc.key.name + "\n\t" + lecLoc.address;
 
-			int recLocRegisterAns = console.selectWithCancel("リストに登録する受け取り場所を選択してください", "0. キャンセル", recLocStrList) - 1;
+			int recLocRegisterAns = console.selectWithCancel("リストに登録する受け取り場所を選択してください", "0. キャンセル", (Object[]) recLocStrList) - 1;
 			if (recLocRegisterAns < 0)
 				return false;
 
@@ -115,15 +135,85 @@ public class UserApp {
 		ArrayList<ProductDataWithModel> productList = new GetPurchaseHistory(this.user.key).execute();
 
 		console.print("購入履歴");
+		int priceSum = 0;
 		for (ProductDataWithModel product : productList) {
-			console.print(" -", "[" + product.modelData.key.code + "]", product.modelData.name, " - ", product.code);
-			console.print("\t", "￥", product.purchasedPrice, "(" + product.modelData.price + ")");
+			DeliveryData delivery = new GetLastDeliveryOfProduct(product.key).execute();
+
+			console.print(" -", (delivery.endTime != null ? "配達済" : "配達中"),
+				"[" + product.modelData.key.code + "]", product.modelData.name, " - ", product.key.code);
+			console.print("\t", "￥", product.purchasedPrice, "(定価: ￥" + product.modelData.price + ")");
 			console.print("\t", "購入日:", product.purchasedTime);
+			if (delivery.endTime != null)
+				console.print("\t", "お届け日:", delivery.endTime);
 			console.print("");
+
+			priceSum += product.purchasedPrice;
 		}
 		if (productList.size() == 0)
 			console.next("まだ購入履歴がありません");
-		else
-			console.next(productList.size(), "件の購入履歴がありました。");
+		else {
+			console.print(productList.size(), "件の購入履歴がありました。");
+			console.next("合計金額:", priceSum);
+		}
+	}
+
+	public void showPurchasedProductCurrentLocation() {
+		ArrayList<ProductKey> productList = this.user.fetchDeliveryNotFinishedProductList();
+
+		for (ProductKey product : productList) {
+			DeliveryData delivery = this.user.fetchCurrentDeliveryOf(product);
+			if (delivery == null)
+				continue;
+			if (delivery.endTime != null)
+				continue;
+
+			ProductDataWithModel productData = new GetProductWithModel(product).execute();
+
+			console.print(" -", productData.modelData.name, delivery.key.product.code);
+			if (delivery.startTime != null)
+				console.print("\t", delivery.key.fromLocation.name + " から " + delivery.toLocation.name + " に運送中です");
+			else
+				console.print("\t", delivery.key.fromLocation.name + " にあります");
+		}
+
+		console.next("以上の配送があります。");
+	}
+
+	public void showProductDelivery() {
+		ArrayList<ProductData> productList = this.user.fetchPurchasedProductList();
+		String[] productStrs = new String[productList.size()];
+		int i = 0;
+		for (ProductData product : productList) {
+			ModelData model = new GetModel(product.key.model).execute();
+			productStrs[i++] = i + ". " + model.name + " - " + product.key.code;
+		}
+		int ansIdx = console.select("運送の詳細を見たい商品を選んでください", (Object[]) productStrs) - 1;
+		if (ansIdx < 0)
+			return;
+
+		ProductData product = productList.get(ansIdx);
+		ArrayList<DeliveryData> deliveryList = this.user.fetchDeliveryListOf(product.key);
+		DeliveryData currentDelivery = this.user.fetchCurrentDeliveryOf(product.key);
+		LocationKey currentLocation = currentDelivery == null ? deliveryList.get(deliveryList.size() - 1).toLocation
+			: currentDelivery.startTime == null ? currentDelivery.key.fromLocation
+				: currentDelivery.endTime == null ? null : currentDelivery.toLocation;
+		for (DeliveryData delivery : deliveryList) {
+			console.print(currentLocation != null && delivery.key.fromLocation.equals(currentLocation) ? " ●" : " -",
+				delivery.key.fromLocation.name);
+			if (delivery.endTime != null) {
+				console.print("\t┃   配送開始:", delivery.startTime);
+				console.print("\t┃      配達員:", delivery.deliveryMember.code);
+				console.print("\t┃   配送完了:", delivery.endTime);
+			} else if (delivery.startTime != null) {
+				console.print("\t┃   配送開始:", delivery.startTime);
+				console.print("\t●      配送中…", delivery.deliveryMember.code);
+				console.print("\t│");
+			} else {
+				console.print("\t│");
+			}
+		}
+		LocationKey lastLocation = deliveryList.get(deliveryList.size() - 1).toLocation;
+		console.next(currentLocation != null && lastLocation.equals(currentLocation) ? " ●" : " -",
+			lastLocation.name);
 	}
 }

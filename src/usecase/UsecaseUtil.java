@@ -1,8 +1,12 @@
+/**
+ * @author CY21249 TAKAGI Masamune
+ */
+
 package usecase;
 
 import myutil.*;
 
-public class App {
+public class UsecaseUtil {
 	private static final Console console = new Console();
 
 	public static void waitUntilSQLServerRunning() {

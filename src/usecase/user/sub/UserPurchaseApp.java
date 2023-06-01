@@ -1,3 +1,7 @@
+/**
+ * @author CY21249 TAKAGI Masamune
+ */
+
 package usecase.user.sub;
 
 import java.util.*;
@@ -5,11 +9,11 @@ import java.util.*;
 import database.data.location.receipt_location.ReceiptLocationData;
 import database.data.model.ModelDataWithProductCount;
 import database.data.model_category.ModelCategoryData;
+import database.data.product.ProductData;
 import database.data.user.UserData;
 import database.executor.location.receipt_location.GetReceiptLocationListByUser;
 import database.executor.product.GetCategoryList;
 import database.executor.product.GetModelListByCategory;
-import module.route_manager.DeliveryPlanCreator;
 import myutil.*;
 import usecase.user.UserApp;
 
@@ -30,7 +34,7 @@ public class UserPurchaseApp {
 		for (final ModelCategoryData categoryData : categoryDataList)
 			categoryStrList[i++] = i + ". " + categoryData.key.name;
 
-		final int categoryIndex = console.selectWithCancel("閲覧したい商品カテゴリーを選んでください", "0. 戻る", categoryStrList) - 1;
+		final int categoryIndex = console.selectWithCancel("閲覧したい商品カテゴリーを選んでください", "0. 戻る", (Object[]) categoryStrList) - 1;
 		if (categoryIndex < 0)
 			return;
 
@@ -55,7 +59,7 @@ public class UserPurchaseApp {
 			modelStrList[i++] = i + ". [" + modelData.key.code + "] " + modelData.name + " (" + modelData.manufacturer
 				+ ")\n\t在庫: " + modelData.productCount + ", ￥" + modelData.price;
 
-		final int modelIndex = console.selectWithCancel("購入したい商品をお選びください", "0. 戻る", modelStrList) - 1;
+		final int modelIndex = console.selectWithCancel("購入したい商品をお選びください", "0. 戻る", (Object[]) modelStrList) - 1;
 		if (modelIndex < 0) {
 			// 状態遷移: 戻る (カテゴリ選択へ)
 			this.selectCategorySection();
@@ -88,7 +92,7 @@ public class UserPurchaseApp {
 
 		int lastIdx = userRecLocList.size();
 
-		int recLocAns = console.selectWithCancel("受け取り場所を選択してください", "0. キャンセル", userRecLocStrList) - 1;
+		int recLocAns = console.selectWithCancel("受け取り場所を選択してください", "0. キャンセル", (Object[]) userRecLocStrList) - 1;
 
 		if (recLocAns < 0) {
 			// 状態遷移: 戻る (商品選択へ)
@@ -123,8 +127,9 @@ public class UserPurchaseApp {
 	void purchaseConfirm(ModelCategoryData selectedCategory, ModelDataWithProductCount selectedModel,
 		ReceiptLocationData selectedRecLoc) {
 		console.print("購入処理中です...");
+		ProductData purchased;
 		try {
-			this.userApp.user.purchase(selectedModel.key, selectedModel.price, selectedRecLoc.key);
+			purchased = this.userApp.user.purchase(selectedModel.key, selectedModel.price, selectedRecLoc.key);
 		} catch (Exception e) {
 			if (e.getMessage().equals("在庫不足"))
 				console.error("在庫がなくなってしまったため、商品を購入できませんでした。");
@@ -136,7 +141,9 @@ public class UserPurchaseApp {
 			return;
 		}
 
-		console.next("購入が完了しました。\n残高: ￥" + this.userApp.user.getData().money + "\n商品が指定の場所に届くまでしばらくお待ちください。");
+		console.next("購入が完了しました。\n残高: ￥" + this.userApp.user.getData().money
+			+ "\n\t商品の製品番号: " + purchased.key.code
+			+ "\n商品が指定の場所に届くまでしばらくお待ちください。");
 
 		// 状態遷移: 戻る (最初へ)
 		this.userApp.selectCommand();

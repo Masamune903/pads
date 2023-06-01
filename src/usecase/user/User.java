@@ -1,12 +1,18 @@
+/**
+ * @author CY21249 TAKAGI Masamune
+ */
+
 package usecase.user;
 
 import java.util.ArrayList;
-
+import database.data.delivery.*;
+import database.data.location.*;
 import database.data.location.receipt_location.*;
 import database.data.location.receipt_location.register_location_register.*;
 import database.data.model.*;
 import database.data.product.*;
 import database.data.user.*;
+import database.executor.delivery.*;
 import database.executor.location.receipt_location.*;
 import database.executor.product.*;
 import database.executor.user.*;
@@ -28,7 +34,7 @@ public class User {
 		this.key = key;
 	}
 
-	public void purchase(ModelKey model, int price, ReceiptLocationKey receiptLocation) throws Exception {
+	public ProductData purchase(ModelKey model, int price, ReceiptLocationKey receiptLocation) throws Exception {
 		UserData u = this.getData();
 		if (u.money < price)
 			throw new Exception("残高不足");
@@ -43,14 +49,10 @@ public class User {
 		DeliveryPlanCreator dpc = new DeliveryPlanCreator(product.key, product.warehouse, receiptLocation);
 		dpc.createDeliveryPlan();
 
+		return product;
 	}
 
-	@Override
-	public String toString() {
-		return "User { id: " + this.key.id + ", name: " + this.getName() + " }";
-	}
-
-	public ArrayList<ReceiptLocationData> getReceiptLocation() {
+	public ArrayList<ReceiptLocationData> fetchReceiptLocation() {
 		return new GetReceiptLocationListByUser(this.key).execute();
 	}
 
@@ -58,4 +60,38 @@ public class User {
 		new RegisterReceiptLocation(new ReceiptLocationRegisterKey(this.key, recLoc)).execute();
 	}
 
+	public ArrayList<ProductData> fetchPurchasedProductList() {
+		return new GetProductListByUser(this.key).execute();
+	}
+
+	public ArrayList<ProductKey> fetchDeliveryNotFinishedProductList() {
+		return new GetDeliveryNotFinishedProductListByUser(this.key).execute();
+	}
+
+	public DeliveryData fetchCurrentDeliveryOf(ProductKey product) {
+		return new GetCurrentDeliveryOfProduct(product).execute();
+	}
+
+	public DeliveryData fetchLastDeliveryOf(ProductKey product) {
+		return new GetLastDeliveryOfProduct(product).execute();
+	}
+
+	public ArrayList<DeliveryData> fetchDeliveryListOf(ProductKey product) {
+		ProductData productData = new GetProduct(product).execute();
+
+		ArrayList<DeliveryData> deliveryList = new ArrayList<>();
+		LocationKey nextLocation = productData.warehouse;
+		DeliveryData delivery;
+		while ((delivery = new GetDelivery(new DeliveryKey(product, nextLocation)).execute()) != null) {
+			deliveryList.add(delivery);
+			nextLocation = delivery.toLocation;
+		}
+
+		return deliveryList;
+	}
+
+	@Override
+	public String toString() {
+		return "ユーザー [" + this.key.id + "] " + this.getName();
+	}
 }

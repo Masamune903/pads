@@ -1,3 +1,7 @@
+/**
+ * @author CY21248 SASAHARA Hayato
+ */
+
 package database.executor.location.trsp_hub;
 
 import java.sql.PreparedStatement;
