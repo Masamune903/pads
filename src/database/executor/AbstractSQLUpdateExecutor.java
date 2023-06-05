@@ -1,4 +1,6 @@
 /**
+ * サブクラスで実装するSQLの更新を実行するクラス
+ * 
  * @author CY21249 TAKAGI Masamune
  */
 
@@ -14,6 +16,7 @@ public abstract class AbstractSQLUpdateExecutor extends AbstractSQLExecutor<Void
 		return null;
 	}
 
+	/** SQL文を実行するテンプレートメソッドを実行する */
 	public void execute() {
 		this.executeTemplate();
 	}

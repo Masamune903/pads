@@ -1,5 +1,9 @@
 /**
+ * 「指定した配送員の配送指示を取得」
+ * 
  * 指定した配達員について、自分に指示された配送指示のうちまだ完了していないものを取得するSQLQuery
+ * 
+ * ユースケース：「運送指示を確認する」
  * 
  * @author CY21202 MIHARA Yutaro
  */
@@ -21,9 +25,16 @@ public class GetDeliveryInstruction extends AbstractSQLQueryExecutor<DeliveryIns
 
 	public String getSQLTemplate() {
 		// 自分がすべき配達は、配達が終わっていない( end_time が null )もの
-		return "SELECT *\n"
-			+ "	FROM delivery\n"
-			+ "	WHERE delivery_member = ?\n"
+
+		/*
+			SELECT *
+				FROM delivery
+				WHERE delivery_member = ?
+					AND end_time IS NULL;
+		 */
+		return "SELECT *"
+			+ "	FROM delivery"
+			+ "	WHERE delivery_member = ?"
 			+ "		AND end_time IS NULL";
 	}
 

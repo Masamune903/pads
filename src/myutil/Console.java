@@ -1,4 +1,6 @@
 /**
+ * 標準入出力のユーティリティ
+ * 
  * @author CY21249 TAKAGI Masamune
  */
 

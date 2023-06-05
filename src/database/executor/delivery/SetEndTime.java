@@ -1,5 +1,9 @@
 /**
+ * 「配送完了とその時刻を記録」
  * 
+ * 指定した配送が完了した時に、その時刻を記録するSQLUpdate
+ * 
+ * ユースケース：「配送する」
  * 
  * @author CY21202 MIHARA Yutaro
  */
@@ -24,6 +28,11 @@ public class SetEndTime extends AbstractSQLUpdateExecutor {
 
 	@Override
 	public String getSQLTemplate() {
+		/*
+			UPDATE delivery
+				SET end_time = ?
+				WHERE product_code = ? AND product_model = ? AND from_location = ?;
+		 */
 		return "UPDATE delivery"
 			+ "	SET end_time = ?"
 			+ "	WHERE product_code = ? AND product_model = ? AND from_location = ?;";

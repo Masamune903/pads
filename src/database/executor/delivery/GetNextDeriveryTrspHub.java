@@ -1,5 +1,9 @@
 /**
+ * 「現在の場所から次に運ぶべき運送拠点を決める」
+ * 
  * currentLocaiton から targetLocation の方へ配達する際の、次の配送拠点を決めるSQLQuery
+ * 
+ * ユースケース：「配送ルートを決める」
  * 
  * @author CY21249 TAKAGI Masamune
  */
@@ -37,8 +41,8 @@ public class GetNextDeriveryTrspHub extends AbstractSQLQueryExecutor<TrspHubData
 					POW(current.longitude - location.longitude, 2) + POW(current.latitude - location.latitude, 2) AS distance_curr,
 					POW(target.longitude - location.longitude, 2) + POW(target.latitude - location.latitude, 2) AS distance_target
 				FROM location AS current, location AS target, location
-				WHERE current.name = '福岡倉庫'
-					AND target.name = 'ファミリーマート札幌店'
+				WHERE current.name = {{current_location}}
+					AND target.name = {{target_location}}
 					AND location.name != current.name
 					AND location.name IN (SELECT name FROM trsp_hub);
 					AND 

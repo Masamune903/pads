@@ -1,4 +1,10 @@
 /**
+ * 「配送開始とその時刻を記録」
+ * 
+ * 指定した配送が始まったときに、その時刻を記録するSQLUpdate
+ * 
+ * ユースケース：「配送する」
+ * 
  * @author CY21202 MIHARA Yutaro
  */
 
@@ -23,6 +29,11 @@ public class SetStartTime extends AbstractSQLUpdateExecutor {
 
 	@Override
 	public String getSQLTemplate() {
+		/*
+			UPDATE delivery
+				SET start_time = ?
+				WHERE product_code = ? AND product_model = ? AND from_location = ?;
+		 */
 		return "UPDATE delivery"
 			+ "	SET start_time = ?"
 			+ "	WHERE product_code = ? AND product_model = ? AND from_location = ?;";

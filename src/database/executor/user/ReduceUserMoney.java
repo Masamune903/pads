@@ -1,4 +1,10 @@
 /**
+ * 「ユーザーの所持金を減らす」
+ * 
+ * 指定したユーザーの所持金を指定した金額減らすSQLUpdate
+ * 
+ * ユースケース：「商品を購入する」
+ * 
  * @author CY21265 MORIMOTO Yuri
  */
 
@@ -20,7 +26,7 @@ public class ReduceUserMoney extends AbstractSQLUpdateExecutor {
 
 	@Override
 	public String getSQLTemplate() {
-		return "UPDATE user SET money = money - ? WHERE id = ?";
+		return "UPDATE user SET money = money - ? WHERE id = ?;";
 	}
 
 	@Override

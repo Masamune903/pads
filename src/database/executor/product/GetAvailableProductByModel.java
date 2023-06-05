@@ -1,4 +1,10 @@
 /**
+ * 「商品情報の商品のうち、購入可能な商品を取得」
+ * 
+ * 指定した商品情報の商品のうち、購入者が未指定の商品を取得するSQLQuery
+ * 
+ * ユースケース：「商品を購入する」
+ * 
  * @author CY21248 SASAHARA Hayato
  */
 
@@ -9,9 +15,9 @@ import java.sql.*;
 import database.executor.*;
 
 import database.data.model.ModelKey;
-import database.data.product.ProductData;
+import database.data.product.ProductDataWithModel;
 
-public class GetAvailableProductByModel extends AbstractSQLQueryExecutor<ProductData> {
+public class GetAvailableProductByModel extends AbstractSQLQueryExecutor<ProductDataWithModel> {
 	private final ModelKey model;
 
 	public GetAvailableProductByModel(ModelKey model) {
@@ -20,7 +26,16 @@ public class GetAvailableProductByModel extends AbstractSQLQueryExecutor<Product
 
 	@Override
 	public String getSQLTemplate() {
-		return "SELECT * FROM product WHERE model = ? AND purchaser IS NULL;";
+		/*
+			SELECT * FROM product, model
+				WHERE model = ?
+					AND product.model = model.code
+					AND product.purchaser IS NULL;
+		*/
+		return "SELECT * FROM product, model"
+			+ "	WHERE model = ?"
+			+ "		AND product.model = model.code"
+			+ "		AND product.purchaser IS NULL;";
 	}
 
 	@Override
@@ -29,11 +44,11 @@ public class GetAvailableProductByModel extends AbstractSQLQueryExecutor<Product
 	}
 
 	@Override
-	public ProductData getResult(ResultSet resSet) throws SQLException {
+	public ProductDataWithModel getResult(ResultSet resSet) throws SQLException {
 		if (!resSet.next())
 			return null;
 
-		return ProductData.fromQueryResult(resSet);
+		return ProductDataWithModel.fromQueryResult(resSet);
 	}
 
 }

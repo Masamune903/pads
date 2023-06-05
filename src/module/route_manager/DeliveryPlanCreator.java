@@ -1,15 +1,15 @@
 /**
+ * 配送ルートを作成するオブジェクト
+ * 
  * @author CY21249 TAKAGI Masamune
  */
 
 package module.route_manager;
 
-import database.data.location.LocationKey;
-import database.data.location.trsp_hub.TrspHubData;
-import database.data.location.trsp_hub.TrspHubKey;
-import database.data.product.ProductKey;
-import database.executor.delivery.AddDelivery;
-import database.executor.delivery.GetNextDeriveryTrspHub;
+import database.data.location.*;
+import database.data.location.trsp_hub.*;
+import database.data.product.*;
+import database.executor.delivery.*;
 
 public class DeliveryPlanCreator {
 	private final ProductKey product;
@@ -23,21 +23,22 @@ public class DeliveryPlanCreator {
 	}
 
 	public void createDeliveryPlan() {
+		// 初期値を配送の出発点に
 		LocationKey curr = this.originLocation;
 
-		int order = 1;
 		while (true) {
-			TrspHubData nextData = new GetNextDeriveryTrspHub(curr, this.targetLocation).execute();
-			if (nextData == null)
+			// 次の配送拠点を取得
+			TrspHubData next = new GetNextDeriveryTrspHub(curr, this.targetLocation).execute();
+			if (next == null)
 				break;
 
-			TrspHubKey next = nextData.key;
+			// 運送予定に追加
+			new AddDelivery(this.product, curr, next.key).execute();
 
-			new AddDelivery(this.product, curr, next, order++).execute();
-
-			curr = next;
+			curr = next.key;
 		}
 
-		new AddDelivery(this.product, curr, this.targetLocation, order).execute();
+		// 目的地までの運送を追加
+		new AddDelivery(this.product, curr, this.targetLocation).execute();
 	}
 }

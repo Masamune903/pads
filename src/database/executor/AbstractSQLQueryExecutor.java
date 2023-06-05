@@ -1,4 +1,6 @@
 /**
+ * サブクラスで実装する、T型のデータを取得するSQLクエリを実行するクラス
+ * 
  * @author CY21249 TAKAGI Masamune
  */
 
@@ -19,6 +21,7 @@ public abstract class AbstractSQLQueryExecutor<T> extends AbstractSQLExecutor<T>
 		return res;
 	}
 
+	/** SQL文を実行するテンプレートメソッドを実行し、その結果を返す */
 	public T execute() {
 		return this.executeTemplate();
 	}

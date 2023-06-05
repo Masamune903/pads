@@ -1,4 +1,10 @@
 /**
+ * 「ユーザーの受け取り場所の候補一覧を取得」
+ * 
+ * 指定したユーザーがまだ受け取り場所に登録していない受け取り場所の候補を取得するSQLQuery
+ * 
+ * ユースケース：「受け取り場所を登録する」
+ * 
  * @author CY21248 SASAHARA Hayato
  * @editor CY21249 TAKAGI Masamune SQL文の訂正
  */
@@ -26,6 +32,16 @@ public class GetReceiptLocationCandidateList extends AbstractGetListSQLQueryExec
 
 	@Override
 	public String getSQLTemplate() {
+		/*
+			SELECT * 
+				FROM receipt_location, location
+				WHERE receipt_location.name = location.name
+					AND location.name NOT IN (
+						SELECT location
+							FROM receipt_location_register
+							WHERE user = ?
+						);
+		 */
 		return "SELECT * "
 			+ "	FROM receipt_location, location"
 			+ "	WHERE receipt_location.name = location.name"

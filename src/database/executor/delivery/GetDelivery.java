@@ -1,5 +1,9 @@
 /**
- * 指定したキーの Delivery を取得するSQLQuery
+ * 「指定した配送を取得」
+ * 
+ * 指定したキーの配送の情報を取得するSQLQuery
+ * 
+ * ユースケース：「商品の場所を確認する」
  * 
  * @author CY21202 MIHARA Yutaro
  */

@@ -3,7 +3,7 @@
  */
 
 public class UserApp {
-    public static void main(String[] args) throws Exception {
-        usecase.user.UserApp.main(args);
-    }
+	public static void main(String[] args) throws Exception {
+		usecase.user.UserApp.main(args);
+	}
 }

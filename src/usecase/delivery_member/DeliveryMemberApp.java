@@ -58,57 +58,78 @@ public class DeliveryMemberApp {
 		this.member.login();
 		console.print(this.member.key.code + " " + this.member.getName() + "がログインしました。操作を開始します。");
 
-		while (true) {
-			// 操作を聞く
-			int cmd1 = 0;
-			while (cmd1 == 0) {
-				cmd1 = console.select("操作を選んでください",
-					"1. 配送指示を確認する",
-					"2. 配送指示を待つ",
-					"3. ログアウト");
+		this.selectSection();
+	}
 
-				if (cmd1 == 3) {
-					if (console.confirm("ログアウトしますか？"))
-						break;
-					cmd1 = 0;
-				}
-			}
+	public void selectSection() {
+		// 操作を聞く
+		int cmd = console.select("操作を選んでください",
+			"1. 配送指示を確認する",
+			"2. 配送指示を待つ",
+			"3. ログアウト");
 
-			if (cmd1 == 3)
+		switch (cmd) {
+			case 1:
+				this.checkInstructionSection();
 				break;
-
-			DeliveryInstruction instruction;
-			if (cmd1 == 1) {
-				instruction = this.member.checkInstruction();
-				if (instruction == null)
-					continue;
-			} else {
-				// 配送拠点で配送指示を待つ
-				instruction = this.member.waitForInstructions();
-			}
-
-
-			// 配送するか尋ねる
-			boolean cmd2 = console.confirm("配送を開始しますか？");
-			if (!cmd2)
-				continue;
-
-			// 配送を開始する
-			this.member.deliverToNext(instruction.delivery);
-
-			console.waitProgress("配送中...", (int) (Math.random() * 8 + 5));
-
-			// 配送が完了する
-			this.member.finishDelivery(instruction.delivery);
-			console.next("拠点へ帰ります");
-
-			// 配送拠点まで帰る
-			this.member.backToTrspHub();
-
-			console.waitProgress("移動中...", 2);
-			this.member.arriveAtTrspHub();
+			case 2:
+				this.waitForInstructionSection();
+				break;
+			case 3:
+				if (console.confirm("ログアウトしますか？")) {
+					this.member.logout();
+					return;
+				}
+				break;
 		}
 
-		this.member.logout();
+		this.selectSection();
+	}
+
+	public void checkInstructionSection() {
+		// 配送指示を確認する
+		DeliveryInstruction instruction = this.member.checkInstruction();
+
+		if (instruction == null)
+			return;
+
+		// 配送するか尋ねる
+		boolean doDeliveryAns = console.confirm("配送を開始しますか？");
+		if (!doDeliveryAns)
+			return;
+
+		this.deliverySection(instruction);
+	}
+
+	public void waitForInstructionSection() {
+		// 配送拠点で配送指示を待つ
+		DeliveryInstruction instruction = this.member.waitForInstruction();
+
+		if (instruction == null)
+			return;
+
+		// 配送するか尋ねる
+		boolean doDeliveryAns = console.confirm("配送を開始しますか？");
+		if (!doDeliveryAns)
+			return;
+
+		this.deliverySection(instruction);
+	}
+
+	public void deliverySection(DeliveryInstruction instruction) {
+		// 配送を開始する
+		this.member.deliverToNext(instruction);
+
+		console.waitProgress("配送中...", (int) (Math.random() * 8 + 5));
+
+		// 配送が完了する
+		this.member.finishDelivery(instruction.delivery);
+		console.next("拠点へ帰ります");
+
+		// 配送拠点まで帰る
+		this.member.backToTrspHub();
+
+		console.waitProgress("移動中...", 2);
+		this.member.arriveAtTrspHub();
 	}
 }

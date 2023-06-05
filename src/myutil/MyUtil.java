@@ -1,4 +1,6 @@
 /**
+ * ユーティリティクラス
+ * 
  * @author CY21249 TAKAGI Masamune
  */
 

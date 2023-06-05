@@ -1,4 +1,10 @@
 /**
+ * 「商品を購入する」
+ * 
+ * 指定したユーザーが指定した商品を、情報(購入価格，購入時刻，受け取り場所)を付与して注文するSQLUpdate
+ * 
+ * ユースケース：「商品を購入する」
+ * 
  * @author CY21265 MORIMOTO Yuri
  */
 
@@ -29,6 +35,15 @@ public class PurchaseProduct extends AbstractSQLUpdateExecutor {
 
 	@Override
 	public String getSQLTemplate() {
+		/*
+			UPDATE product
+				SET purchaser = ?,
+					purchased_price = ?,
+					purchased_time = ?,
+					receipt_location = ?
+				WHERE code = ?
+					AND model = ?;
+		 */
 		return "UPDATE product"
 			+ "	SET purchaser = ?,"
 			+ "		purchased_price = ?,"

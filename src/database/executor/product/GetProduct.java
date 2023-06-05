@@ -1,4 +1,10 @@
 /**
+ * 「商品の情報を取得」
+ * 
+ * 指定したキーの商品の情報を取得するSQLQuery
+ * 
+ * ユースケース：「商品の場所を確認する」
+ * 
  * @author CY21248 SASAHARA Hayato
  */
 
@@ -8,10 +14,10 @@ import java.sql.*;
 
 import database.executor.*;
 
-import database.data.product.ProductData;
+import database.data.product.ProductDataWithModel;
 import database.data.product.ProductKey;
 
-public class GetProduct extends AbstractSQLQueryExecutor<ProductData> {
+public class GetProduct extends AbstractSQLQueryExecutor<ProductDataWithModel> {
 	private final ProductKey key;
 
 	public GetProduct(ProductKey key) {
@@ -20,8 +26,16 @@ public class GetProduct extends AbstractSQLQueryExecutor<ProductData> {
 
 	@Override
 	public String getSQLTemplate() {
-		return "SELECT * FROM product"
-			+ "	WHERE code = ? AND model = ?";
+		/*
+			SELECT * FROM product, model
+				WHERE product.model = model.code
+					AND product.code = ?
+					AND product.model = ?;
+		 */
+		return "SELECT * FROM product, model"
+			+ "	WHERE product.model = model.code"
+			+ "		AND product.code = ?"
+			+ "		AND product.model = ?;";
 	}
 
 	@Override
@@ -31,10 +45,10 @@ public class GetProduct extends AbstractSQLQueryExecutor<ProductData> {
 	}
 
 	@Override
-	public ProductData getResult(ResultSet resSet) throws SQLException {
+	public ProductDataWithModel getResult(ResultSet resSet) throws SQLException {
 		if (!resSet.next())
 			return null;
 
-		return ProductData.fromQueryResult(resSet);
+		return ProductDataWithModel.fromQueryResult(resSet);
 	}
 }

@@ -43,7 +43,6 @@ CREATE TABLE delivery (
 	product_model VARCHAR(20),
 	from_location VARCHAR(50),
 	to_location VARCHAR(50),
-	order_index INT,
 	delivery_member VARCHAR(20),
 	start_time DATETIME,
 	end_time DATETIME,

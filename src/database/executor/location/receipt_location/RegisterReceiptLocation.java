@@ -1,4 +1,10 @@
 /**
+ * 「受け取り場所を登録する」
+ * 
+ * 指定したユーザーの受け取り場所の登録情報を登録するSQLUpdate
+ * 
+ * ユースケース：「受け取り場所を登録する」
+ * 
  * @author CY21248 SASAHARA Hayato
  */
 
@@ -8,7 +14,7 @@ import java.sql.*;
 
 import database.executor.*;
 
-import database.data.location.receipt_location.register_location_register.ReceiptLocationRegisterKey;
+import database.data.location.receipt_location.register_location_register.*;
 
 public class RegisterReceiptLocation extends AbstractSQLUpdateExecutor {
 	private final ReceiptLocationRegisterKey key;
@@ -19,6 +25,7 @@ public class RegisterReceiptLocation extends AbstractSQLUpdateExecutor {
 
 	@Override
 	public String getSQLTemplate() {
+		/* INSERT receipt_location_register VALUES ({{user}}, {{location}}); */
 		return "INSERT receipt_location_register VALUES (?, ?);";
 	}
 

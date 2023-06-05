@@ -1,3 +1,13 @@
+/**
+ * 「ユーザーの残高を追加する」
+ * 
+ * 指定したユーザーの残高に指定した金額を追加するSQLUpdate
+ * 
+ * ユースケース：「残高を追加する」
+ * 
+ * @author CY21265 MORIMOTO Yuri
+ */
+
 package database.executor.user;
 
 import java.sql.*;

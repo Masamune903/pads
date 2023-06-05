@@ -1,4 +1,10 @@
 /**
+ * 「ユーザーの情報を取得する」
+ * 
+ * 指定したキーのユーザーの情報を取得するSQLQuery
+ * 
+ * ユースケース：「商品を購入する」「残高を追加する」
+ * 
  * @author CY21265 MORIMOTO Yuri
  */
 
@@ -20,8 +26,13 @@ public class GetUser extends AbstractSQLQueryExecutor<UserData> {
 
 	@Override
 	public String getSQLTemplate() {
+		/* 
+			SELECT * FROM user
+				WHERE id = ?;
+		*/
+
 		return "SELECT * FROM user"
-			+ "	WHERE id = ?";
+			+ "	WHERE id = ?;";
 	}
 
 	@Override

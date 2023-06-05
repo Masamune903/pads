@@ -1,5 +1,9 @@
 /**
- * 指定した商品について、直近の配送を取得するSQLQuery
+ * 「その商品の直近の配送を取得」
+ * 
+ * 指定した商品について、1つ前の配送が完了しており、自身は完了していない配送を取得するSQLQuery
+ * 
+ * ユースケース：「商品の場所を確認する」
  * 
  * @author CY21249 TAKAGI Masamune
  */
@@ -25,6 +29,28 @@ public class GetCurrentDeliveryOfProduct extends AbstractSQLQueryExecutor<Delive
 
 		return DeliveryData.fromQueryResult(resSet);
 	}
+
+	/*
+		SELECT *
+			FROM delivery
+			WHERE product_code = ?
+				AND product_model = ?
+				AND end_time IS NULL
+				AND ((from_location) IN (
+					SELECT prev.to_location
+						FROM delivery AS prev
+						-- 同じ商品の前の配達 (同じ商品を運んでおり、to_location が from_location と一致している) が完了済みである
+						WHERE (prev.product_code, prev.product_model) IN ((delivery.product_code, delivery.product_model))
+							AND prev.to_location = delivery.from_location
+							AND prev.end_time IS NOT NULL
+					) OR (0) IN (
+						SELECT COUNT(*)
+							FROM delivery AS prev
+							-- 同じ商品の前の配達 (同じ商品を運んでおり、to_location が from_location と一致している) がない
+							WHERE (prev.product_code, prev.product_model) IN ((delivery.product_code, delivery.product_model))
+								AND prev.to_location = delivery.from_location
+					));
+	 */
 
 	@Override
 	public String getSQLTemplate() {

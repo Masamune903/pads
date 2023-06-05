@@ -1,14 +1,19 @@
 /**
+ * 「全ての運送拠点を取得する」
+ * 
+ * 全ての運送拠点の一覧を取得するSQLQuery
+ * 
+ * ユースケース：なし (配送指示者の運送拠点選択で表示)
+ * 
  * @author CY21248 SASAHARA Hayato
  */
 
 package database.executor.location.trsp_hub;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import database.data.location.trsp_hub.TrspHubData;
-import database.executor.AbstractGetListSQLQueryExecutor;
+import java.sql.*;
+
+import database.data.location.trsp_hub.*;
+import database.executor.*;
 
 public class GetTrspHubList extends AbstractGetListSQLQueryExecutor<TrspHubData> {
 

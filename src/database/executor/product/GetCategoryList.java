@@ -1,4 +1,10 @@
 /**
+ * 「カテゴリ一覧を取得」
+ * 
+ * カテゴリ一覧を取得するSQLQuery
+ * 
+ * ユースケース：「商品を購入する」
+ * 
  * @author CY21248 SASAHARA Hayato
  */
 
@@ -12,6 +18,10 @@ import database.data.model_category.ModelCategoryData;
 
 public class GetCategoryList extends AbstractGetListSQLQueryExecutor<ModelCategoryData> {
 	public String getSQLTemplate() {
+		/* 
+			SELECT name
+				FROM model_category;
+		 */
 		return "SELECT name"
 			+ "	FROM model_category";
 	}

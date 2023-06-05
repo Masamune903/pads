@@ -1,5 +1,9 @@
 /**
- * 指定したメンバーに配送指示が出たことを更新するSQLUpdate
+ * 「メンバーに配送指示を出す」
+ * 
+ * 配送の配達員のカラムに値を入れるSQLUpdate
+ * 
+ * ユースケース：「配送指示を出す」
  * 
  * @author CY21202 MIHARA Yutaro
  */
@@ -25,6 +29,11 @@ public class SetDeliveryMember extends AbstractSQLUpdateExecutor {
 
 	@Override
 	public String getSQLTemplate() {
+		/*
+			UPDATE delivery
+				SET delivery_member = ?
+				WHERE product_code = ? AND product_model = ? AND from_location = ?;
+		*/
 		return "UPDATE delivery"
 			+ "	SET delivery_member = ?"
 			+ "	WHERE product_code = ? AND product_model = ? AND from_location = ?;";

@@ -5,6 +5,7 @@
 package usecase.user;
 
 import java.util.ArrayList;
+
 import database.data.delivery.*;
 import database.data.location.*;
 import database.data.location.receipt_location.*;
@@ -12,12 +13,14 @@ import database.data.location.receipt_location.register_location_register.*;
 import database.data.model.*;
 import database.data.product.*;
 import database.data.user.*;
+
 import database.executor.delivery.*;
 import database.executor.location.receipt_location.*;
 import database.executor.product.*;
 import database.executor.user.*;
-import module.route_manager.*;
 import database.executor.purchase.*;
+
+import module.route_manager.*;
 
 public class User {
 	public final UserKey key;
@@ -52,19 +55,23 @@ public class User {
 		return product;
 	}
 
-	public ArrayList<ReceiptLocationData> fetchReceiptLocation() {
+	public ArrayList<ReceiptLocationData> fetchReceiptLocationList() {
 		return new GetReceiptLocationListByUser(this.key).execute();
+	}
+
+	public ArrayList<ReceiptLocationData> fetchReceiptLocationCandidateList() {
+		return new GetReceiptLocationCandidateList(this.key).execute();
 	}
 
 	public void registerReceiptLocation(ReceiptLocationKey recLoc) {
 		new RegisterReceiptLocation(new ReceiptLocationRegisterKey(this.key, recLoc)).execute();
 	}
 
-	public ArrayList<ProductData> fetchPurchasedProductList() {
+	public ArrayList<ProductDataWithModel> fetchPurchasedProductList() {
 		return new GetProductListByUser(this.key).execute();
 	}
 
-	public ArrayList<ProductKey> fetchDeliveryNotFinishedProductList() {
+	public ArrayList<ProductDataWithModel> fetchDeliveryNotFinishedProductList() {
 		return new GetDeliveryNotFinishedProductListByUser(this.key).execute();
 	}
 
