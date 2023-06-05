@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import database.data.delivery.*;
 import database.data.location.*;
 import database.data.location.receipt_location.*;
-import database.data.location.receipt_location.register_location_register.*;
+import database.data.location.receipt_location.receipt_location_register.*;
 import database.data.model.*;
 import database.data.product.*;
 import database.data.user.*;

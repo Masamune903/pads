@@ -133,6 +133,7 @@ public class UserPurchaseApp {
 			this.purchaseConfirm(selectedCategory, selectedModel, selectedRecLoc);
 			return;
 		} else {
+			console.next("購入をキャンセルしました");
 			// 状態遷移: 繰り返し
 			this.purchaseSection(selectedCategory, selectedModel);
 			return;
@@ -160,9 +161,6 @@ public class UserPurchaseApp {
 		console.next("購入が完了しました。\n残高: ￥" + this.user.getData().money
 			+ "\n\t商品の製品番号: " + purchased.key.code
 			+ "\n商品が指定の場所に届くまでしばらくお待ちください。");
-
-		// 状態遷移: 戻る (最初へ)
-		this.userApp.selectSection();
 	}
 
 }

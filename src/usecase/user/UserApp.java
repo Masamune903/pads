@@ -162,6 +162,7 @@ public class UserApp {
 	}
 
 	public void showPurchasedProductCurrentLocationSection() {
+		console.print("全ての商品の現在の場所を表示します。");
 		ArrayList<ProductDataWithModel> productList = this.user.fetchDeliveryNotFinishedProductList();
 
 		// 運送中の商品とその場所を表示
@@ -178,6 +179,7 @@ public class UserApp {
 			else
 				console.print("\t", delivery.key.fromLocation.name + " にあります");
 		}
+		console.next("");
 	}
 
 	public void showProductDeliverySection() {
@@ -193,7 +195,9 @@ public class UserApp {
 		int ansIdx = console.select("運送の詳細を見たい商品を選んでください", (Object[]) productStrs) - 1;
 		if (ansIdx < 0)
 			return;
-		ProductData product = productList.get(ansIdx);
+		ProductDataWithModel product = productList.get(ansIdx);
+
+		console.print(product.modelData.name + "の運送の詳細を表示します。");
 
 		// 商品の運送リストを取得
 		ArrayList<DeliveryData> deliveryList = this.user.fetchDeliveryListOf(product.key);

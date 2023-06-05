@@ -11,10 +11,8 @@
 package database.executor.location.receipt_location;
 
 import java.sql.*;
-
+import database.data.location.receipt_location.receipt_location_register.*;
 import database.executor.*;
-
-import database.data.location.receipt_location.register_location_register.*;
 
 public class RegisterReceiptLocation extends AbstractSQLUpdateExecutor {
 	private final ReceiptLocationRegisterKey key;
